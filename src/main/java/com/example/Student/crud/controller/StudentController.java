@@ -122,6 +122,29 @@ public class StudentController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(response);
         }
     }
+    @GetMapping("/filter/{age}")
+    @PreAuthorize("hasAuthority('ADMIN")
+    public ResponseEntity<ResponseModel> getAllSTDByAge(@PathVariable int age){
+        try {
+            List<Student> stdAge=studentService.getAllStudent().stream()
+                    .filter(student -> student.getAge()>10 || student.getAge()==10).toList();
+            ResponseModel response=new ResponseModel(
+                    HttpStatus.OK.value(),
+                    HttpStatus.OK,
+                    stdAge,
+                    "filter by age"
+            );
+            return ResponseEntity.ok(response);
+        }catch (Exception e){
+            ResponseModel response=new ResponseModel(
+                    HttpStatus.INTERNAL_SERVER_ERROR.value(),
+                    HttpStatus.INTERNAL_SERVER_ERROR,
+                    "No data",
+                    e.getMessage()
+            );
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(response);
+        }
+    }
 
     @DeleteMapping("/{id}")
     @PreAuthorize("hasAuthority('ADMIN')")
